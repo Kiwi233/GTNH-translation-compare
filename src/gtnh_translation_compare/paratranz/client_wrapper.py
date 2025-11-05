@@ -160,6 +160,7 @@ class ClientWrapper:
     @retry_after_429()
     async def _create_file(self, paratranz_file: ParatranzFile) -> int:
         path = os.path.dirname(paratranz_file.file_name)
+        path = path.replace("+", "%2B").replace(" ", "%20").replace("[", "%5B").replace("]", "%5D") if path else ""
         res = await self.client.post(
             url=f"projects/{self.project_id}/files",
             data={"path": path},
