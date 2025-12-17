@@ -11,6 +11,18 @@ from tenacity import retry, wait_fixed, stop_after_attempt, retry_if_exception, 
 
 from gtnh_translation_compare.paratranz.types import File, StringItem, StringPage, ParatranzFile
 
+def _log_res(self, desc: str, res: httpx.Response) -> None:
+    try:
+        # 在抛出异常前，先打印出响应的详细信息
+        error_detail = res.text
+        print(f"DEBUG: {desc} - Status: {res.status_code}")
+        print(f"DEBUG: Response body: {error_detail}")  # 重点：打印服务器返回的具体错误
+        res.raise_for_status()
+    except httpx.HTTPStatusError as e:
+        # 可以将错误信息也记录到日志中
+        self.log.error(f"{desc}: {res}")
+        self.log.error(f"Server error detail: {error_detail}")  # 记录到日志
+        raise e
 
 def retry_after_429() -> Callable[[WrappedFn], WrappedFn]:
     wait_seconds = 60
