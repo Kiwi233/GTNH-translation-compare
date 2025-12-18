@@ -28,7 +28,7 @@ class Action:
             client=httpx.AsyncClient(
                 headers={"Authorization": paratranz_token},
                 base_url="https://paratranz.cn/api",
-                timeout=120,
+                timeout=600,
             ),
             project_id=paratranz_project_id,
             cache_dir=settings.PARATRANZ_CACHE_DIR,
